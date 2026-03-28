@@ -1,4 +1,3 @@
-// Types for the API response
 export interface Book {
   key: string;
   title: string;
@@ -14,31 +13,46 @@ export interface SearchResponse {
   start: number;
 }
 
-// How many books to fetch per page
 export const PAGE_SIZE = 20;
 
-// Get cover image URL with fallback
 export function getCoverUrl(coverId: number | undefined): string {
   if (!coverId) return "";
   return `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`;
 }
 
-// Main fetcher function
 export async function fetchBooks(
   query: string,
   page: number
 ): Promise<SearchResponse> {
-  const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(
-    query
-  )}&page=${page}&limit=${PAGE_SIZE}`;
+  try {
+    const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(
+      query
+    )}&page=${page}&limit=${PAGE_SIZE}`;
 
-  const response = await fetch(url);
+    const response = await fetch(url, {
+      cache: "no-store", // 🔥 VERY IMPORTANT (prevents build crash)
+    });
 
-  // Handle HTTP errors
-  if (!response.ok) {
-    throw new Error(`Failed to fetch books: ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch books: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    // ✅ Safety fallback
+    return {
+      docs: data.docs || [],
+      numFound: data.numFound || 0,
+      start: data.start || 0,
+    };
+  } catch (error) {
+    console.error("FetchBooks Error:", error);
+
+    // ✅ NEVER crash build
+    return {
+      docs: [],
+      numFound: 0,
+      start: 0,
+    };
   }
-
-  const data = await response.json();
-  return data;
 }
