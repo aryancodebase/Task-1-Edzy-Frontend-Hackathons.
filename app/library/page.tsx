@@ -8,6 +8,9 @@ import FilterChips from "@/components/FilterChips";
 import ThemeToggle from "@/components/ThemeToggle";
 import BackToTop from "@/components/BackToTop";
 
+export const dynamic = "force-dynamic";
+export const fetchCache = "force-no-store";
+
 export default function LibraryPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -37,11 +40,9 @@ export default function LibraryPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors">
-
       {/* Header */}
       <header className="sticky top-0 z-40 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-3">
-
           {/* Top row — logo + search + toggle */}
           <div className="flex items-center gap-3">
             {/* Logo */}
@@ -65,29 +66,25 @@ export default function LibraryPage() {
 
           {/* Filter chips row */}
           <FilterChips activeQuery={query} onSelect={handleChipSelect} />
-
         </div>
       </header>
 
       {/* Main content */}
       <main className="max-w-7xl mx-auto px-4 py-6">
-
         {/* Results label */}
         <p className="text-xs text-gray-400 uppercase tracking-widest mb-4">
           Showing results for{" "}
           <span className="font-semibold text-gray-600 dark:text-gray-300">
-            "{query}"
+            {query}
           </span>
         </p>
 
         {/* Book grid with infinite scroll */}
         <BookGrid query={query} />
-
       </main>
 
       {/* Back to top floating button */}
       <BackToTop />
-
     </div>
   );
 }
