@@ -15,28 +15,22 @@ export default function LibraryPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Read query from URL — default to "science"
-  const initialQuery = searchParams.get("q") || "science";
-  const [query, setQuery] = useState(initialQuery);
+  const [query, setQuery] = useState("science"); // ✅ SAFE DEFAULT
 
-  // Sync query to URL whenever it changes
+  // ✅ Read params ONLY after mount
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q) {
+      setQuery(q);
+    }
+  }, [searchParams]);
+
+  // Sync query to URL
   useEffect(() => {
     const params = new URLSearchParams();
     params.set("q", query);
     router.replace(`/library?${params.toString()}`, { scroll: false });
   }, [query, router]);
-
-  // When chip is selected → update query + reset
-  function handleChipSelect(chip: string) {
-    setQuery(chip);
-  }
-
-  // When search bar changes → update query
-  function handleSearchChange(value: string) {
-    if (value.trim()) {
-      setQuery(value);
-    }
-  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 transition-colors">
