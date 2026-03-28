@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import BookGrid from "@/components/BookGrid";
 import SearchBar from "@/components/SearchBar";
 import FilterChips from "@/components/FilterChips";
